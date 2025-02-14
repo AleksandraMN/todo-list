@@ -1,0 +1,14 @@
+{
+  "todos": [
+    {
+      "title": "Убрать снег",
+      "completed": false,
+      "id": 2
+    },
+    {
+      "title": "Заполнить декларацию",
+      "completed": false,
+      "id": 3
+    }
+  ]
+}

@@ -8,7 +8,7 @@ import { NEW_TODO_ID } from './const';
 
 export const App = () => {
 	const [todos, setTodos] = useState([]);
-	const [serchPhrase, setSearchPhrase] = useState('');
+	const [searchPhrase, setSearchPhrase] = useState('');
 	const [isAlphabetSorting, setIsAlphabetSorting] = useState(false);
 
 	const onTodoAdd = () => {
@@ -16,10 +16,10 @@ export const App = () => {
 	};
 
 	useEffect(() => {
-		readTodos(serchPhrase, isAlphabetSorting).then((loadedTodos) =>
+		readTodos(searchPhrase, isAlphabetSorting).then((loadedTodos) =>
 			setTodos(loadedTodos.reverse()),
 		);
-	}, [serchPhrase, isAlphabetSorting]);
+	}, [searchPhrase, isAlphabetSorting]);
 
 	const onTodoSave = (todoId) => {
 		const { title, completed } = findTodo(todos, todoId) || {};
@@ -61,7 +61,7 @@ export const App = () => {
 			<ControlPanel
 				onTodoAdd={onTodoAdd}
 				onSearch={setSearchPhrase}
-				onSorting={setSearchPhrase}
+				onSorting={setIsAlphabetSorting}
 			/>
 			{todos.map(({ id, title, completed, isEditing = false }) => (
 				<Todo

@@ -1,4 +1,4 @@
-import { HTTP_METHOD } from '../const;';
+import { HTTP_METHOD } from '../const';
 
 const fetchServer = (method, { id, ...payload } = {}) => {
 	let url = `http://localhost:3005/todos`;
@@ -27,8 +27,8 @@ const fetchServer = (method, { id, ...payload } = {}) => {
 
 export const createTodo = (newTodo) => fetchServer('POST', newTodo);
 
-export const readTodos = (serchPhrase = '', isAlphabetSorting = false) =>
-	fetchServer('GET', { serchPhrase, isAlphabetSorting });
+export const readTodos = (searchPhrase = '', isAlphabetSorting = false) =>
+	fetchServer('GET', { searchPhrase, isAlphabetSorting });
 
 export const updateTodo = (todoData) => fetchServer('PATCH', todoData);
 

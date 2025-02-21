@@ -1,0 +1,12 @@
+
+.notFoundPage {
+	margin: 50px auto;
+	text-align: center;
+	font-size: 18px;
+}
+
+.homeLink {
+	color: red;
+	text-decoration: none;
+	cursor: pointer;
+}

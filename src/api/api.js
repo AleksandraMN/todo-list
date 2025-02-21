@@ -33,3 +33,6 @@ export const readTodos = (searchPhrase = '', isAlphabetSorting = false) =>
 export const updateTodo = (todoData) => fetchServer('PATCH', todoData);
 
 export const deleteTodo = (todoId) => fetchServer('DELETE', { id: todoId });
+
+
+

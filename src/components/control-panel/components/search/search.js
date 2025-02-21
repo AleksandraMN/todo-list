@@ -1,11 +1,12 @@
 import styles from './search.module.css';
 import {debounce} from './utils';
-import { useState, useRef } from 'react';
+import { useState, useRef} from 'react';
 
 export const Search = ({onSearch}) => {
 	const [value, setValue] = useState('');
 
 	const debouncedOnSearch = useRef(debounce(onSearch, 1500)).current;
+
 
 	const onChange = ({target}) => {
 		setValue(target.value);

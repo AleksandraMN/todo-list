@@ -5,3 +5,7 @@
 	border-radius: 10px;
 }
 
+.todo {
+	padding: 10px;
+	border-bottom: 1px solid #bbb;
+}

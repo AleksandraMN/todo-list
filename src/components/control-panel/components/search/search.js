@@ -1,11 +1,13 @@
+import { FilterContext } from '../../../../context/filter-context';
 import styles from './search.module.css';
 import {debounce} from './utils';
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 
-export const Search = ({onSearch}) => {
+export const Search = () => {
 	const [value, setValue] = useState('');
+	const {setSearchPhrase} = useContext(FilterContext);
 
-	const debouncedOnSearch = useRef(debounce(onSearch, 1500)).current;
+	const debouncedOnSearch = useRef(debounce(setSearchPhrase, 1500)).current;
 
 	const onChange = ({target}) => {
 		setValue(target.value);
@@ -14,7 +16,7 @@ export const Search = ({onSearch}) => {
 
 	const onSubmit = (e) => {
 		e.preventDefault();
-		onSearch(value);
+		setSearchPhrase(value);
 	};
 
 	return (

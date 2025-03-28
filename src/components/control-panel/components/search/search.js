@@ -1,33 +1,42 @@
+import React, { useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { debounce } from './utils';
+import { setSearchPhrase } from '../../../../actions';
 import styles from './search.module.css';
-import {debounce} from './utils';
-import { useState, useRef} from 'react';
 
-export const Search = ({onSearch}) => {
-	const [value, setValue] = useState('');
+export const Search = () => {
+  const dispatch = useDispatch();
 
-	const debouncedOnSearch = useRef(debounce(onSearch, 1500)).current;
+  // Получаем текущую поисковую фразу из Redux
+  const searchPhrase = useSelector((state) => state.filters.searchPhrase);
+	
+  // Создаем дебаунсированный вызов экшена
+  const debouncedSetSearchPhrase = useRef(debounce((value) => dispatch(setSearchPhrase(value)), 1500)).current;
 
+  // Обработчик изменения значения в поле поиска
+  const onChange = ({ target }) => {
+    const value = target.value;
+    dispatch(setSearchPhrase(value)); // Устанавливаем текущее значение в Redux
+    debouncedSetSearchPhrase(value); // Дебаунсированный вызов для триггера поиска
+  };
 
-	const onChange = ({target}) => {
-		setValue(target.value);
-		debouncedOnSearch(target.value);
-	};
+  // Обработчик отправки формы
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (searchPhrase) { // Проверка на не пустую строку
+      dispatch(setSearchPhrase(searchPhrase)); // Принудительно триггерим поиск
+    }
+  };
 
-	const onSubmit = (e) => {
-		e.preventDefault();
-		onSearch(value);
-	};
-
-	return (
-		<form className={styles.search} onSubmit={onSubmit}>
-			<input
-				className={styles.input}
-				type="text"
-				value={value}
-				placeholder="Поиск..."
-				onChange={onChange}
-			/>
-
-		</form>
-	);
+  return (
+    <form className={styles.search} onSubmit={onSubmit}>
+      <input
+        className={styles.input}
+        type="text"
+        value={searchPhrase}
+        placeholder="Поиск..."
+        onChange={onChange}
+      />
+    </form>
+  );
 };

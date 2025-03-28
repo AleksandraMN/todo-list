@@ -1,49 +1,58 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {Button} from '../button';
-import { readTodos, updateTodo, deleteTodo } from '../../api';
 import styles from './task-page.module.css';
+import { fetchTodoById, updateTodoAsync, deleteTodoAsync } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 export const TaskPage = () => {
-  const { id } = useParams();
+	const { id } = useParams();
   const navigate = useNavigate();
-  const [todo, setTodo] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const dispatch = useDispatch();
+
+	const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState('');
 
-  useEffect(() => {
-    readTodos().then((todos) => {
-      const foundTodo = todos.find((todo) => todo.id === parseInt(id));
-      if (foundTodo) {
-        setTodo(foundTodo);
-        setTitle(foundTodo.title);
-      } else {
-        navigate('/404');
-      }
-    });
-  }, [id, navigate]);
+	useEffect(() => {
+    dispatch(fetchTodoById(id));
+  }, [id, dispatch]);
+
+  const todo = useSelector((state) => state.todos.currentTodo);
+
+	useEffect(() => {
+		if (todo) {
+		  setTitle(todo.title);
+	  }
+		 if (!id) {
+			navigate('/404');
+		}
+	}, [todo, id, navigate]);
 
   const handleSave = () => {
-		if (title === '') return;
-    updateTodo({ id: todo.id, title }).then(() => {
-      setIsEditing(false);
-      setTodo({ ...todo, title });
-    });
+    if (title.trim() === '') return;
+    dispatch(updateTodoAsync({ id: todo.id, title }))
+			.then(() => {
+				setIsEditing(false);
+			})
+			.catch((error) => {
+				console.error("Ошибка при обновлении задачи:", error);
+			});
   };
 
   const handleDelete = () => {
-    deleteTodo(todo.id).then(() => {
-      navigate('/');
-    });
+    dispatch(deleteTodoAsync(todo.id))
+			.then(() => {
+				navigate('/');
+			})
+			.catch((error) => {
+				console.error("Ошибка при удалении задачи:", error);
+			});
   };
-
-  if (!todo) return null;
 
   return (
     <div className={styles.taskPage}>
-      <Button onClick={() => navigate(-1)}>
-			←
-      </Button>
+      <Button onClick={() => {if (title.trim() === '') return; navigate(-1)}}>←</Button>
       <div className={styles.taskContent}>
         {isEditing ? (
           <input
@@ -53,13 +62,13 @@ export const TaskPage = () => {
             className={styles.editInput}
           />
         ) : (
-          <p className={styles.todoTitle}>{todo.title}</p>
+          <p className={styles.todoTitle}>{title}</p>
         )}
         <div className={styles.buttons}>
           {isEditing ? (
             <Button onClick={handleSave}>💾</Button>
           ) : (
-            <Button onClick={() => setIsEditing(true)}>✎</Button>
+            <Button onClick={() => { setTitle(title); setIsEditing(true); }}>✎</Button>
           )}
           <Button onClick={handleDelete}>✖</Button>
         </div>
@@ -67,3 +76,4 @@ export const TaskPage = () => {
     </div>
   );
 };
+
